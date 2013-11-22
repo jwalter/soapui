@@ -109,7 +109,6 @@ import java.awt.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragSource;
 import java.awt.event.*;
-import java.io.*;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -117,7 +116,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.List;
+import java.util.Properties;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.prefs.BackingStoreException;
@@ -291,8 +292,6 @@ public class SoapUI
 		mainToolbar.add( new ImportWsdlProjectActionDelegate() );
 		mainToolbar.add( new SaveAllActionDelegate() );
 		mainToolbar.addSpace( 2 );
-		mainToolbar.add( new ShowOnlineHelpAction( "User Guide", HelpUrls.USERGUIDE_HELP_URL,
-				"Opens the SoapUI User-Guide in a browser" ) );
 		mainToolbar.add( new ShowOnlineHelpAction( "Forum", HelpUrls.FORUMS_HELP_URL,
 				"Opens the SoapUI Forum in a browser", "/group_go.png" ) );
 		mainToolbar.addSpace( 2 );
@@ -1777,7 +1776,8 @@ public class SoapUI
 
 		private void expandWindow( JFrame frame )
 		{
-			Rectangle savedWindowBounds = new UserPreferences().getSoapUIWindowBounds();
+			UserPreferences userPreferences = new UserPreferences();
+			Rectangle savedWindowBounds = userPreferences.getSoapUIWindowBounds();
 			if( savedWindowBounds == null || !windowFullyVisibleOnScreen( savedWindowBounds ) )
 			{
 				Rectangle availableScreenArea = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
@@ -1786,6 +1786,10 @@ public class SoapUI
 			else
 			{
 				frame.setBounds( savedWindowBounds );
+				if( !UISupport.isMac() )
+				{
+					frame.setExtendedState( userPreferences.getSoapUIExtendedState() );
+				}
 			}
 			frame.addWindowListener( new WindowAdapter()
 			{
@@ -1794,7 +1798,10 @@ public class SoapUI
 				{
 					try
 					{
-						new UserPreferences().setSoapUIWindowBounds( event.getWindow().getBounds() );
+						JFrame frame = ( JFrame )event.getWindow();
+						UserPreferences userPreferences = new UserPreferences();
+						userPreferences.setSoapUIWindowBounds( frame.getBounds() );
+						userPreferences.setSoapUIExtendedState( frame.getExtendedState() );
 					}
 					catch( BackingStoreException e )
 					{
@@ -1806,7 +1813,7 @@ public class SoapUI
 
 		private boolean windowFullyVisibleOnScreen( Rectangle windowBounds )
 		{
-			Rectangle bargainBounds = new Rectangle( windowBounds.x, windowBounds.y, windowBounds.width * 4 / 5, windowBounds.height * 4 / 5 );
+			Rectangle bargainBounds = new Rectangle( windowBounds.x + 12, windowBounds.y + 12, windowBounds.width * 4 / 5, windowBounds.height * 4 / 5 );
 			for( GraphicsDevice graphicsDevice : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices() )
 			{
 				if( graphicsDevice.getDefaultConfiguration().getBounds().contains( bargainBounds ) )

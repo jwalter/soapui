@@ -11,6 +11,7 @@
  */
 package com.eviware.soapui.support;
 
+import com.eviware.soapui.impl.wsdl.support.http.ProxyUtils;
 import junit.framework.JUnit4TestAdapter;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class VersionUpdateTestCase
 	@Test
 	public void shouldParseVersionUpdateXml() throws Exception
 	{
+		ProxyUtils.setProxyEnabled( false );
 		SoapUIVersionUpdate versionUpdate = new SoapUIVersionUpdate();
 
 		versionUpdate.getLatestVersionAvailable( RELEASE_NOTES );
