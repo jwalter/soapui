@@ -626,6 +626,17 @@ public class SoapUI
 				startSoapUI( mainArgs, "SoapUI " + SOAPUI_VERSION + " " + brandedTitleExt,
 						new StandaloneSoapUICore( true ) );
 
+				if( getSettings().getBoolean( UISettings.SHOW_STARTUP_PAGE ) && !SoapUI.isJXBrowserDisabled( true ) )
+				{
+					SwingUtilities.invokeLater( new Runnable()
+					{
+						public void run()
+						{
+							showPushPage();
+						}
+					} );
+				}
+
 				if( isAutoUpdateVersion() ){
 					new Thread( new Runnable()
 					{
@@ -1768,10 +1779,6 @@ public class SoapUI
 		{
 			expandWindow( frame );
 			frame.setVisible( true );
-			if( getSettings().getBoolean( UISettings.SHOW_STARTUP_PAGE ) && !SoapUI.isJXBrowserDisabled( true ) )
-			{
-				showPushPage();
-			}
 		}
 
 		private void expandWindow( JFrame frame )
