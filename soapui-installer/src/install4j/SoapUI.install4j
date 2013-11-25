@@ -142,7 +142,6 @@
           <entry location="dist_standalone" fileType="regular" />
           <entry location="iistest" fileType="regular" />
           <entry location="images" fileType="regular" />
-          <entry location="install4j" fileType="regular" />
           <entry location="jsl" fileType="regular" />
           <entry location="META-INF" fileType="regular" />
           <entry location="nsis" fileType="regular" />
